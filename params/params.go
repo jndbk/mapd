@@ -31,8 +31,9 @@ func GetBaseOpPath() string {
 
 // Params
 var (
-	LAST_GPS_POSITION = ParamPath("LastGPSPosition")
-	MAPD_SETTINGS     = ParamPath("MapdSettings")
+	LAST_GPS_POSITION      = ParamPath("LastGPSPosition")
+	MAPD_SETTINGS          = ParamPath("MapdSettings")
+	MAP_CURVE_TARGET_LAT_A = ParamPath("MapCurveTargetLatA")
 )
 
 // exists returns whether the given file or directory exists

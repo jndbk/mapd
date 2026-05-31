@@ -2,6 +2,7 @@ package settings
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"os"
 	"strings"
@@ -106,6 +107,16 @@ func (s *MapdSettings) Recommended() {
 	}
 }
 
+func (s *MapdSettings) LoadMapCurveTargetLatA() {
+	data, err := params.GetParam(params.MAP_CURVE_TARGET_LAT_A)
+	if err == nil && len(data) > 0 {
+		var val float32
+		if _, err := fmt.Sscanf(string(data), "%f", &val); err == nil {
+			s.MapCurveTargetLatA = val
+		}
+	}
+}
+
 func (s *MapdSettings) Load() (success bool) {
 	data, err := params.GetParam(params.MAPD_SETTINGS)
 	if err != nil {
@@ -119,6 +130,8 @@ func (s *MapdSettings) Load() (success bool) {
 		return false
 	}
 
+	s.LoadMapCurveTargetLatA()
+
 	s.setupLogger()
 
 	return true
@@ -131,6 +144,8 @@ func (s *MapdSettings) Unmarshal(b []byte) (success bool) {
 		slog.Warn("failed to unmarshal settings data", "error", err)
 		return false
 	}
+
+	s.LoadMapCurveTargetLatA()
 
 	s.setupLogger()
 
@@ -158,6 +173,12 @@ func (s *MapdSettings) Save() {
 	if err != nil {
 		slog.Error("failed to save MAPD_SETTINGS param", "error", err)
 		return
+	}
+
+	latAData := []byte(fmt.Sprintf("%g", s.MapCurveTargetLatA))
+	err = params.PutParam(params.MAP_CURVE_TARGET_LAT_A, latAData)
+	if err != nil {
+		slog.Error("failed to save MAP_CURVE_TARGET_LAT_A param", "error", err)
 	}
 }
 

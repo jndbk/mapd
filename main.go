@@ -51,7 +51,13 @@ func main() {
 	model := cereal.NewSubscriber("modelV2", cereal.ModelV2Reader, true, false)
 	defer model.Sub.Msgq.Close()
 
+	var loopCount int
 	for {
+		loopCount++
+		if loopCount%20 == 0 {
+			ms.Settings.LoadMapCurveTargetLatA()
+		}
+
 		err := state.Send() // send beginning of each loop to ensure it happens at the correct rate
 		if err != nil {
 			slog.Error("Failed to send update", "error", err)

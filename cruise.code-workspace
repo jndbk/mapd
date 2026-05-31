@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../cruise"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../bluepilot"
+		}
+	],
+	"settings": {}
+}
