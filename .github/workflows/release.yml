@@ -1,0 +1,34 @@
+name: Build and Release mapd
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build & Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Build ARM64 Binary
+        run: |
+          mkdir -p build
+          GOOS=linux GOARCH=arm64 go build -ldflags="-extldflags=-static -s -w" -o build/mapd
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/mapd
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
