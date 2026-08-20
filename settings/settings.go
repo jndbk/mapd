@@ -121,12 +121,12 @@ func (s *MapdSettings) Default() {
 
 		settingsVersion := parsed.S("settings_version").Data()
 		if settingsVersion == nil {
-			settingsVersion = uint64(0)
+			settingsVersion = float64(0)
 		}
 
-		if settingsVersion != SETTINGS_VERSION {
+		if settingsVersion.(float64) != float64(SETTINGS_VERSION) {
 			slog.Info("default file settings version mismatch, running migrations", "expected_version", SETTINGS_VERSION, "settings_version", settingsVersion)
-			migratedSettings := Migrate(uint64(settingsVersion.(uint64)), defaults)
+			migratedSettings := Migrate(uint64(settingsVersion.(float64)), defaults)
 			defaults, err = json.Marshal(migratedSettings)
 			if err != nil {
 				slog.Warn("failed to marshal migrated default settings", "error", err)
@@ -139,6 +139,7 @@ func (s *MapdSettings) Default() {
 			slog.Warn("failed to load custom default settings", "error", err)
 			return
 		}
+		slog.Info("successfully loaded custom default settings from /data/openpilot/mapd_defaults.json")
 	}
 }
 
@@ -156,12 +157,12 @@ func (s *MapdSettings) Recommended() {
 
 		settingsVersion := parsed.S("settings_version").Data()
 		if settingsVersion == nil {
-			settingsVersion = uint64(0)
+			settingsVersion = float64(0)
 		}
 
-		if settingsVersion != SETTINGS_VERSION {
+		if settingsVersion.(float64) != float64(SETTINGS_VERSION) {
 			slog.Info("default file settings version mismatch, running migrations", "expected_version", SETTINGS_VERSION, "settings_version", settingsVersion)
-			migratedSettings := Migrate(uint64(settingsVersion.(uint64)), recommended)
+			migratedSettings := Migrate(uint64(settingsVersion.(float64)), recommended)
 			recommended, err = json.Marshal(migratedSettings)
 			if err != nil {
 				slog.Warn("failed to marshal migrated recommended settings", "error", err)
@@ -174,6 +175,7 @@ func (s *MapdSettings) Recommended() {
 			slog.Warn("failed to load custom recommended settings", "error", err)
 			return
 		}
+		slog.Info("successfully loaded custom recommended settings from /data/openpilot/mapd_recommended.json")
 	} else {
 		err := json.Unmarshal(recommendedJson, s)
 		if err != nil {
