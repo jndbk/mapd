@@ -9,6 +9,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -44,3 +46,11 @@ jobs:
         with:
           name: mapd
           path: build/mapd
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: build/mapd
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
